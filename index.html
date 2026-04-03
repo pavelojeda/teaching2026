@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Results Lookup</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 60px auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        input, button {
+            padding: 10px;
+            font-size: 16px;
+            margin: 10px;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Check Your Score</h1>
+    <p>Enter your student ID number</p>
+
+    <input type="text" id="studentId" placeholder="Enter ID">
+    <button onclick="lookupScore()">Check</button>
+
+    <div id="result"></div>
+
+    <script>
+        let scores = {};
+
+        async function loadCSV() {
+            const response = await fetch('scores.csv');
+            const text = await response.text();
+
+            const rows = text.trim().split('\n');
+
+            for (let i = 1; i < rows.length; i++) {
+                const [id, score] = rows[i].split(',');
+                scores[id.trim()] = score.trim();
+            }
+        }
+
+        function lookupScore() {
+            const id = document.getElementById('studentId').value.trim();
+            const resultDiv = document.getElementById('result');
+
+            if (scores[id]) {
+                resultDiv.textContent = `Your score is: ${scores[id]}`;
+            } else {
+                resultDiv.textContent = 'ID not found';
+            }
+        }
+
+        loadCSV();
+    </script>
+
+</body>
+</html>
