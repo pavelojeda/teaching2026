@@ -260,7 +260,7 @@ function lookup() {
     chip.className = 'status-chip chip-absent';
   } else {
     document.getElementById('rScore').textContent = st.score % 1 === 0 ? st.score : st.score.toFixed(1);
-    document.getElementById('rMax').textContent = MAX_SCORE ? `/ ${MAX_SCORE} pts` : '';
+    document.getElementById('rMax').textContent = MAX_SCORE ? `100 pts` : '';
     const pass = st.score >= PASS;
     chip.textContent = pass ? 'Aprobado ✓' : 'Reprobado ✗';
     chip.className = 'status-chip ' + (pass ? 'chip-pass' : 'chip-fail');
