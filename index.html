@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Notas:  Evaluación escrita </title>
-  <H2>Teoría de juegos 2026 </H2>
+<title>Evaluación escrita</title>
+<H2>Teoría de Juegos 2026</H2>
+  
 <style>
   :root {
     --bg: #f8f7f4;
@@ -56,13 +57,10 @@
   body { background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem; }
   .container { max-width: 720px; margin: 0 auto; }
   h1 { font-size: 1.5rem; font-weight: 500; margin-bottom: 0.25rem; }
-  .subtitle { font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1.5rem; }
-
-  /* Search */
-  .search-wrap { display: none; }
-  .search-wrap.visible { display: block; }
-  .loading-msg { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem; }
-  .search-box { display: flex; gap: 10px; margin-bottom: 1.5rem; }
+  .subtitle { font-size: 0.875rem; color: var(--text-muted); margin-bottom: 2rem; }
+  .search-box {
+    display: flex; gap: 10px; margin-bottom: 1.5rem;
+  }
   .search-box input {
     flex: 1; padding: 0.65rem 1rem; border: 0.5px solid var(--border-strong);
     border-radius: 8px; background: var(--card); color: var(--text);
@@ -75,8 +73,6 @@
     font-weight: 500; transition: opacity 0.15s;
   }
   .search-box button:hover { opacity: 0.88; }
-
-  /* Result */
   .result-card {
     background: var(--card); border: 0.5px solid var(--border);
     border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1.5rem;
@@ -86,11 +82,14 @@
   .result-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
   .result-name { font-size: 1.1rem; font-weight: 500; }
   .result-id { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
-  .score-badge { font-size: 1.75rem; font-weight: 500; min-width: 80px; text-align: right; line-height: 1; }
-  .score-label { font-size: 0.75rem; text-align: right; margin-top: 4px; color: var(--text-muted); }
+  .score-badge {
+    font-size: 1.75rem; font-weight: 500; min-width: 80px; text-align: right; line-height: 1;
+  }
+  .score-label { font-size: 0.75rem; text-align: right; margin-top: 4px; }
   .status-chip {
     display: inline-block; padding: 4px 12px; border-radius: 20px;
-    font-size: 0.8rem; font-weight: 500; margin-bottom: 0.75rem; border: 0.5px solid;
+    font-size: 0.8rem; font-weight: 500; margin-bottom: 0.75rem;
+    border: 0.5px solid;
   }
   .chip-pass { background: var(--pass-bg); color: var(--pass-text); border-color: var(--pass-border); }
   .chip-fail { background: var(--fail-bg); color: var(--fail-text); border-color: var(--fail-border); }
@@ -106,19 +105,20 @@
     padding: 0.75rem 1rem; font-size: 0.9rem; margin-bottom: 1.5rem; display: none;
   }
   .error-msg.visible { display: block; }
-
-  /* Stats */
-  .stats-section { display: none; margin-top: 2.5rem; }
-  .stats-section.visible { display: block; }
-  .stats-section h2 { font-size: 0.8rem; font-weight: 500; margin-bottom: 1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .stats-section { margin-top: 2.5rem; }
+  .stats-section h2 { font-size: 1rem; font-weight: 500; margin-bottom: 1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.8rem; }
   .stats-tabs { display: flex; gap: 6px; margin-bottom: 1.25rem; flex-wrap: wrap; }
   .tab-btn {
     padding: 6px 14px; border: 0.5px solid var(--border-strong); border-radius: 20px;
-    background: var(--card); color: var(--text-muted); font-size: 0.85rem; cursor: pointer; transition: all 0.15s;
+    background: var(--card); color: var(--text-muted); font-size: 0.85rem; cursor: pointer;
+    transition: all 0.15s;
   }
   .tab-btn.active { background: var(--accent-light); color: var(--accent-text); border-color: var(--accent); font-weight: 500; }
   .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 1.5rem; }
-  .metric-card { background: var(--card); border: 0.5px solid var(--border); border-radius: 8px; padding: 0.85rem 1rem; }
+  .metric-card {
+    background: var(--card); border: 0.5px solid var(--border); border-radius: 8px;
+    padding: 0.85rem 1rem;
+  }
   .metric-label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px; }
   .metric-value { font-size: 1.5rem; font-weight: 500; }
   .dist-chart { margin-top: 1rem; }
@@ -133,112 +133,55 @@
 </head>
 <body>
 <div class="container">
-  <h1>Notas: Evaluación escrita</h1>
+  <h1>Evaluación escrita</h1>
   <p class="subtitle">Consulta tu calificación ingresando tu número de cédula</p>
 
-  <p class="loading-msg" id="loadingMsg">Cargando notas…</p>
-
-  <div class="search-wrap" id="searchWrap">
-    <div class="search-box">
-      <input type="text" id="idInput" placeholder="Número de cédula / ID" inputmode="numeric" autocomplete="off" />
-      <button onclick="lookup()">Buscar</button>
-    </div>
-    <div class="error-msg" id="errorMsg">No se encontró ningún estudiante con ese ID.</div>
-    <div class="result-card" id="resultCard">
-      <div class="result-header">
-        <div>
-          <div class="result-name" id="rName"></div>
-          <div class="result-id" id="rId"></div>
-        </div>
-        <div>
-          <div class="score-badge" id="rScore"></div>
-          <div class="score-label" id="rMax"></div>
-        </div>
-      </div>
-      <div class="status-chip" id="rChip"></div>
-      <div class="obs-box" id="rObs" style="display:none"></div>
-    </div>
-    <hr class="divider">
-    <div class="stats-section" id="statsSection">
-      <h2>Estadísticas del grupo</h2>
-      <div class="stats-tabs">
-        <button class="tab-btn active" onclick="setTab('all', this)">Todos</button>
-        <button class="tab-btn" onclick="setTab('pass', this)">Aprobados</button>
-        <button class="tab-btn" onclick="setTab('fail', this)">Reprobados</button>
-      </div>
-      <div class="metric-grid" id="metricGrid"></div>
-      <div class="dist-chart" id="distChart"></div>
-    </div>
-    <p class="footer" id="footerNote"></p>
+  <div class="search-box">
+    <input type="text" id="idInput" placeholder="Número de cédula / ID" inputmode="numeric" autocomplete="off" />
+    <button onclick="lookup()">Buscar</button>
   </div>
+
+  <div class="error-msg" id="errorMsg">No se encontró ningún estudiante con ese ID.</div>
+
+  <div class="result-card" id="resultCard">
+    <div class="result-header">
+      <div>
+        <div class="result-name" id="rName"></div>
+        <div class="result-id" id="rId"></div>
+      </div>
+      <div>
+        <div class="score-badge" id="rScore"></div>
+        <div class="score-label" style="color:var(--text-muted)">/ 150 pts</div>
+      </div>
+    </div>
+    <div class="status-chip" id="rChip"></div>
+    <div class="obs-box" id="rObs" style="display:none"></div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="stats-section">
+    <h2>Estadísticas del grupo</h2>
+    <div class="stats-tabs">
+      <button class="tab-btn active" onclick="setTab('all', this)">Todos</button>
+      <button class="tab-btn" onclick="setTab('pass', this)">Aprobados</button>
+      <button class="tab-btn" onclick="setTab('fail', this)">Reprobados</button>
+    </div>
+    <div class="metric-grid" id="metricGrid"></div>
+    <div class="dist-chart" id="distChart"></div>
+  </div>
+
+  <p class="footer">Nota mínima de aprobación: 60 puntos</p>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script>
+const STUDENTS = [{"id":"12419529","name":"Adrian Alejandro Alarcon Tirado","score":130,"obs":""},{"id":"8466835","name":"Diego Alcázar Gonzales","score":70,"obs":""},{"id":"13119470","name":"Rhio Lee Lineth Ali Tito","score":55,"obs":""},{"id":"8392399","name":"Adrián Nicolás Almaraz Vega","score":92.5,"obs":""},{"id":"8343710","name":"Alba Bautista Ayaviri","score":65,"obs":""},{"id":"13550931","name":"Estefania Emily Benitez Salas","score":102.5,"obs":"Buen trabajo ! Continua con el esfuerzo."},{"id":"8309678","name":"Abril Ariana Bernal Gómez","score":50,"obs":""},{"id":"","name":"Luciana Valentina Bustillos Enriquez","score":null,"obs":"No dio examen"},{"id":"","name":"Ayrton Limber Cabrera Orue","score":null,"obs":"No dio examen"},{"id":"12421206","name":"Sebastián Alejandro Cajias Casanova","score":114,"obs":""},{"id":"10928511","name":"Mariana Rosario Canaviri Sillerico","score":39,"obs":""},{"id":"6960021","name":"Valentina Valeria Canedo Lemaitre","score":90,"obs":""},{"id":"12978149","name":"Edilson Erick Carrillo Huanca","score":55.5,"obs":""},{"id":"9987617","name":"Catherine Alexandra Carvajal Cuentas","score":25,"obs":""},{"id":"11063636","name":"Juan Antonio Clavijo Vega","score":35,"obs":""},{"id":"9893045","name":"Ronald Cruz Coharite Mamani","score":137.5,"obs":""},{"id":"8469600","name":"Leandro David Cusicanqui Zárate","score":95,"obs":""},{"id":"8482275","name":"Oscar Ignacio Díaz Pacheco","score":13,"obs":""},{"id":"13732426","name":"Jorge Andrés Garcia Irrazabal","score":25,"obs":""},{"id":"10642109","name":"José Arturo García Vega","score":50,"obs":""},{"id":"8443793","name":"Fabio Luciano Gómez Tapia","score":57.5,"obs":"Nota a revisar"},{"id":"10914809","name":"Gustavo Gabriel Gonzales Urquizo","score":83,"obs":""},{"id":"8349547","name":"Nataly Rosario Huanca Choque","score":30,"obs":""},{"id":"6860794","name":"Yarid Nicole Huasco Canaviri","score":5,"obs":""},{"id":"8344263","name":"Deyna Lecoña Arratia","score":70,"obs":""},{"id":"6192739","name":"Marco Antonio Leyva Gutierrez","score":63,"obs":""},{"id":"12895648","name":"Cristian Henry Lorberg Saavedra","score":20,"obs":""},{"id":"8360619","name":"Sofia Melissa Mamani Flores","score":87.5,"obs":""},{"id":"8481161","name":"Jorge Andre Manrique Rodríguez","score":55,"obs":""},{"id":"8847467","name":"Daniela Margaret Medina Sandy","score":77.5,"obs":""},{"id":"12800326","name":"Brayan Mendoza Mamani","score":45.5,"obs":""},{"id":"6963319","name":"Alejandro Kenjiro Miyauchi Flores","score":15,"obs":""},{"id":"12959501","name":"José Ignacio Molina Revollo","score":50,"obs":""},{"id":"6846633","name":"Natalia Pardo Coss","score":1,"obs":""},{"id":"9872821","name":"Walter Ruben Pasten Vera","score":17.5,"obs":""},{"id":"6961786","name":"Mayte Ibalú Portillo Gonzales","score":35,"obs":""},{"id":"12361431","name":"Alessandra Puma Cabrera","score":24.5,"obs":""},{"id":"12454204","name":"Libia Alessandra Quisbert Ticona","score":30,"obs":""},{"id":"6839463","name":"Rodrigo Serafín Rocha Conde","score":55,"obs":""},{"id":"10018438","name":"Laura Adriana Rojas Martinez","score":20,"obs":""},{"id":"13157830","name":"Diago Erick Rojas Soto","score":114,"obs":""},{"id":"8435547","name":"Rainer Enrique Saavedra Peña","score":76,"obs":""},{"id":"9121680","name":"Ignacio David Salmon Marquez","score":150,"obs":""},{"id":"10953335","name":"Sebastian Omar Sandoval Leon","score":42.5,"obs":""},{"id":"7896666","name":"Sofia Martina Urquieta Quilla","score":70,"obs":""},{"id":"8469997","name":"Juan Pablo Vasquez Cadima","score":25,"obs":""},{"id":"13246096","name":"Mathias Leonardo Vedia Muñoz","score":20,"obs":""},{"id":"10900291","name":"Edgar Ismael Vega Chuquimia","score":70,"obs":""},{"id":"13121354","name":"Joaquin Diego Von Borries Velasco","score":30,"obs":""}];
+
 const PASS = 60;
-let STUDENTS = [];
-let MAX_SCORE = null;
 
 function toTitleCase(s) {
-  return s.replace(/\S+/g, t => t.charAt(0).toUpperCase() + t.slice(1).toLowerCase());
+  return s.replace(/\w\S*/g, t => t.charAt(0).toUpperCase() + t.substr(1).toLowerCase());
 }
-
-function parseWorkbook(ab) {
-  const wb = XLSX.read(new Uint8Array(ab), { type: 'array' });
-  const ws = wb.Sheets[wb.SheetNames[0]];
-  const rows = XLSX.utils.sheet_to_json(ws, { defval: '' });
-
-  const sample = rows[0] || {};
-  const keys = Object.keys(sample);
-  const find = (...candidates) => keys.find(k => candidates.some(c => k.toLowerCase().includes(c))) || '';
-
-  const colId   = find('id', 'ci', 'cedula', 'carnet');
-  const colFn1  = find('primer', 'nombre1', 'first');
-  const colFn2  = find('segundo', 'nombre2', 'middle');
-  const colAp   = find('paterno', 'apellido1', 'last');
-  const colAm   = find('materno', 'apellido2');
-  const colNote = find('nota', 'score', 'calific', 'grade', 'puntos');
-  const colObs  = find('obs', 'comment', 'remark', 'observ');
-  const colName = !colFn1 ? find('nombre', 'name', 'alumno', 'estudiante') : '';
-
-  STUDENTS = rows.map(r => {
-    const rawId = String(r[colId] || '').trim().replace(/\.0$/, '');
-    const name = colName
-      ? String(r[colName] || '').trim()
-      : [r[colFn1], r[colFn2], r[colAp], r[colAm]].map(v => String(v || '').trim()).filter(Boolean).join(' ');
-    const rawScore = r[colNote];
-    const score = (rawScore === '' || rawScore == null) ? null : Number(rawScore);
-    const obs = String(r[colObs] || '').trim();
-    return { id: rawId, name, score: isNaN(score) ? null : score, obs };
-  }).filter(s => s.name);
-
-  const scores = STUDENTS.map(s => s.score).filter(s => s !== null);
-  MAX_SCORE = scores.length ? Math.max(...scores) : null;
-
-  document.getElementById('searchWrap').classList.add('visible');
-  document.getElementById('loadingMsg').style.display = 'none';
-  document.getElementById('statsSection').classList.add('visible');
-  document.getElementById('footerNote').textContent = `Nota mínima de aprobación: ${PASS} puntos`;
-  renderMetrics('all');
-  renderDist('all');
-}
-
-// Auto-fetch the xlsx from the same folder
-fetch('NotasP1.xlsx')
-  .then(r => {
-    if (!r.ok) throw new Error('Archivo no encontrado');
-    return r.arrayBuffer();
-  })
-  .then(ab => parseWorkbook(ab))
-  .catch(err => {
-    document.getElementById('loadingMsg').style.display = 'none';
-    document.getElementById('searchWrap').innerHTML =
-      `<p style="color:var(--fail-text);background:var(--fail-bg);border:0.5px solid var(--fail-border);border-radius:8px;padding:0.75rem 1rem;font-size:0.9rem">
-        No se pudo cargar el archivo de notas: <strong>${err.message}</strong><br>
-        Asegurate de que <code>NotasP1.xlsx</code> esté en la misma carpeta que este archivo.
-      </p>`;
-    document.getElementById('searchWrap').classList.add('visible');
-  });
 
 function lookup() {
   const q = document.getElementById('idInput').value.trim();
@@ -255,12 +198,10 @@ function lookup() {
   const obsBox = document.getElementById('rObs');
   if (st.score === null) {
     document.getElementById('rScore').textContent = '—';
-    document.getElementById('rMax').textContent = '';
     chip.textContent = 'Ausente';
     chip.className = 'status-chip chip-absent';
   } else {
     document.getElementById('rScore').textContent = st.score % 1 === 0 ? st.score : st.score.toFixed(1);
-    document.getElementById('rMax').textContent = MAX_SCORE ? `100 pts` : '';
     const pass = st.score >= PASS;
     chip.textContent = pass ? 'Aprobado ✓' : 'Reprobado ✗';
     chip.className = 'status-chip ' + (pass ? 'chip-pass' : 'chip-fail');
@@ -292,7 +233,7 @@ function stats(arr) {
 }
 
 function fmt(v) {
-  if (v === undefined || v === null) return '—';
+  if (v === undefined) return '—';
   return Number.isInteger(v) ? v : v.toFixed(1);
 }
 
@@ -312,22 +253,22 @@ function renderMetrics(tab) {
 
 function renderDist(tab) {
   const sub = getSubset(tab);
-  const hi = MAX_SCORE && MAX_SCORE > 100 ? MAX_SCORE + 1 : 101;
   const bins = [
-    [0, 20, '0–19'],
-    [20, 40, '20–39'],
-    [40, 60, '40–59'],
-    [60, 80, '60–79'],
-    [80, 100, '80–99'],
-    [100, hi, '100+'],
+    [0,20,'0–19'],
+    [20,40,'20–39'],
+    [40,60,'40–59'],
+    [60,80,'60–79'],
+    [80,100,'80–99'],
+    [100,151,'100+'],
   ];
-  const counts = bins.map(([lo, hiB, lbl]) => ({
+  const counts = bins.map(([lo, hi, lbl]) => ({
     lbl,
-    n: sub.filter(s => s.score >= lo && s.score < hiB).length,
+    n: sub.filter(s => s.score >= lo && s.score < hi).length,
     pass: lo >= PASS
   }));
   const maxN = Math.max(...counts.map(c => c.n), 1);
-  document.getElementById('distChart').innerHTML = counts.map(c => {
+  const chart = document.getElementById('distChart');
+  chart.innerHTML = counts.map(c => {
     const pct = Math.round((c.n / maxN) * 100);
     const color = c.pass ? 'var(--bar-pass)' : 'var(--bar-fail)';
     return `<div class="bar-row">
@@ -345,6 +286,9 @@ function setTab(tab, btn) {
   renderMetrics(tab);
   renderDist(tab);
 }
+
+renderMetrics('all');
+renderDist('all');
 </script>
 </body>
 </html>
