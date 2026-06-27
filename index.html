@@ -3,9 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Evaluación escrita</title>
-<H2>Teoría de Juegos 2026</H2>
-  
+<title>Notas — Parcial 1</title>
 <style>
   :root {
     --bg: #f8f7f4;
@@ -55,12 +53,15 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem; }
-  .container { max-width: 720px; margin: 0 auto; }
+  .container { max-width: 760px; margin: 0 auto; }
   h1 { font-size: 1.5rem; font-weight: 500; margin-bottom: 0.25rem; }
-  .subtitle { font-size: 0.875rem; color: var(--text-muted); margin-bottom: 2rem; }
-  .search-box {
-    display: flex; gap: 10px; margin-bottom: 1.5rem;
-  }
+  .subtitle { font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1.5rem; }
+
+  .loading-msg { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem; }
+
+  .search-wrap { display: none; }
+  .search-wrap.visible { display: block; }
+  .search-box { display: flex; gap: 10px; margin-bottom: 1.5rem; }
   .search-box input {
     flex: 1; padding: 0.65rem 1rem; border: 0.5px solid var(--border-strong);
     border-radius: 8px; background: var(--card); color: var(--text);
@@ -73,6 +74,7 @@
     font-weight: 500; transition: opacity 0.15s;
   }
   .search-box button:hover { opacity: 0.88; }
+
   .result-card {
     background: var(--card); border: 0.5px solid var(--border);
     border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1.5rem;
@@ -82,18 +84,19 @@
   .result-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
   .result-name { font-size: 1.1rem; font-weight: 500; }
   .result-id { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
-  .score-badge {
-    font-size: 1.75rem; font-weight: 500; min-width: 80px; text-align: right; line-height: 1;
-  }
-  .score-label { font-size: 0.75rem; text-align: right; margin-top: 4px; }
   .status-chip {
     display: inline-block; padding: 4px 12px; border-radius: 20px;
-    font-size: 0.8rem; font-weight: 500; margin-bottom: 0.75rem;
-    border: 0.5px solid;
+    font-size: 0.8rem; font-weight: 500; border: 0.5px solid; flex-shrink: 0;
   }
   .chip-pass { background: var(--pass-bg); color: var(--pass-text); border-color: var(--pass-border); }
   .chip-fail { background: var(--fail-bg); color: var(--fail-text); border-color: var(--fail-border); }
   .chip-absent { background: var(--absent-bg); color: var(--absent-text); border-color: var(--absent-border); }
+
+  .field-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 1rem; }
+  .field-card { background: var(--absent-bg); border-radius: 8px; padding: 0.7rem 0.9rem; }
+  .field-label { font-size: 0.72rem; color: var(--text-muted); margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.03em; }
+  .field-value { font-size: 1.3rem; font-weight: 500; }
+
   .obs-box {
     background: var(--absent-bg); border-radius: 6px; padding: 0.6rem 0.9rem;
     font-size: 0.875rem; color: var(--text-muted); margin-top: 0.5rem;
@@ -105,82 +108,128 @@
     padding: 0.75rem 1rem; font-size: 0.9rem; margin-bottom: 1.5rem; display: none;
   }
   .error-msg.visible { display: block; }
-  .stats-section { margin-top: 2.5rem; }
-  .stats-section h2 { font-size: 1rem; font-weight: 500; margin-bottom: 1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.8rem; }
+
+  .stats-section { display: none; margin-top: 2.5rem; }
+  .stats-section.visible { display: block; }
+  .stats-section h2 { font-size: 0.8rem; font-weight: 500; margin-bottom: 0.25rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .stats-sub { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1rem; }
   .stats-tabs { display: flex; gap: 6px; margin-bottom: 1.25rem; flex-wrap: wrap; }
   .tab-btn {
     padding: 6px 14px; border: 0.5px solid var(--border-strong); border-radius: 20px;
-    background: var(--card); color: var(--text-muted); font-size: 0.85rem; cursor: pointer;
-    transition: all 0.15s;
+    background: var(--card); color: var(--text-muted); font-size: 0.85rem; cursor: pointer; transition: all 0.15s;
   }
   .tab-btn.active { background: var(--accent-light); color: var(--accent-text); border-color: var(--accent); font-weight: 500; }
   .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 1.5rem; }
-  .metric-card {
-    background: var(--card); border: 0.5px solid var(--border); border-radius: 8px;
-    padding: 0.85rem 1rem;
-  }
+  .metric-card { background: var(--card); border: 0.5px solid var(--border); border-radius: 8px; padding: 0.85rem 1rem; }
   .metric-label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px; }
   .metric-value { font-size: 1.5rem; font-weight: 500; }
-  .dist-chart { margin-top: 1rem; }
-  .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 7px; font-size: 0.8rem; }
-  .bar-label { width: 60px; text-align: right; color: var(--text-muted); flex-shrink: 0; }
-  .bar-track { flex: 1; background: var(--border); border-radius: 4px; height: 18px; overflow: hidden; }
-  .bar-fill { height: 100%; border-radius: 4px; transition: width 0.4s ease; display: flex; align-items: center; padding-left: 6px; font-size: 0.75rem; color: #fff; font-weight: 500; }
-  .bar-count { width: 30px; text-align: left; color: var(--text-muted); flex-shrink: 0; }
+  .dist-chart { margin-top: 1rem; display: flex; align-items: flex-end; gap: 10px; height: 160px; padding-top: 1.5rem; }
+  .hist-col { flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; }
+  .hist-value { font-size: 0.8rem; font-weight: 500; margin-bottom: 4px; color: var(--text); }
+  .hist-bar { width: 100%; max-width: 48px; border-radius: 5px 5px 2px 2px; transition: height 0.4s ease; min-height: 2px; }
+  .hist-label { font-size: 0.72rem; color: var(--text-muted); margin-top: 8px; white-space: nowrap; }
+  .hist-axis { border-top: 1px solid var(--border); }
   .divider { border: none; border-top: 0.5px solid var(--border); margin: 2rem 0; }
   .footer { font-size: 0.75rem; color: var(--text-muted); text-align: center; margin-top: 2rem; }
 </style>
 </head>
 <body>
 <div class="container">
-  <h1>Evaluación escrita</h1>
+  <h1>Notas — Parcial 1</h1>
   <p class="subtitle">Consulta tu calificación ingresando tu número de cédula</p>
 
-  <div class="search-box">
-    <input type="text" id="idInput" placeholder="Número de cédula / ID" inputmode="numeric" autocomplete="off" />
-    <button onclick="lookup()">Buscar</button>
-  </div>
+  <p class="loading-msg" id="loadingMsg">Cargando notas…</p>
 
-  <div class="error-msg" id="errorMsg">No se encontró ningún estudiante con ese ID.</div>
-
-  <div class="result-card" id="resultCard">
-    <div class="result-header">
-      <div>
-        <div class="result-name" id="rName"></div>
-        <div class="result-id" id="rId"></div>
-      </div>
-      <div>
-        <div class="score-badge" id="rScore"></div>
-        <div class="score-label" style="color:var(--text-muted)">/ 150 pts</div>
-      </div>
+  <div class="search-wrap" id="searchWrap">
+    <div class="search-box">
+      <input type="text" id="idInput" placeholder="Número de cédula / ID" inputmode="numeric" autocomplete="off" />
+      <button onclick="lookup()">Buscar</button>
     </div>
-    <div class="status-chip" id="rChip"></div>
-    <div class="obs-box" id="rObs" style="display:none"></div>
-  </div>
+    <div class="error-msg" id="errorMsg">No se encontró ningún estudiante con ese ID.</div>
 
-  <hr class="divider">
-
-  <div class="stats-section">
-    <h2>Estadísticas del grupo</h2>
-    <div class="stats-tabs">
-      <button class="tab-btn active" onclick="setTab('all', this)">Todos</button>
-      <button class="tab-btn" onclick="setTab('pass', this)">Aprobados</button>
-      <button class="tab-btn" onclick="setTab('fail', this)">Reprobados</button>
+    <div class="result-card" id="resultCard">
+      <div class="result-header">
+        <div>
+          <div class="result-name" id="rName"></div>
+          <div class="result-id" id="rId"></div>
+        </div>
+        <div class="status-chip" id="rChip"></div>
+      </div>
+      <div class="field-grid">
+        <div class="field-card"><div class="field-label">Primer turno</div><div class="field-value" id="rPrimer"></div></div>
+        <div class="field-card"><div class="field-label">Segundo turno</div><div class="field-value" id="rSegundo"></div></div>
+        <div class="field-card"><div class="field-label">Sistema</div><div class="field-value" id="rSistema"></div></div>
+        <div class="field-card"><div class="field-label">Ensayo</div><div class="field-value" id="rEnsayo"></div></div>
+      </div>
+      <div class="obs-box" id="rObs" style="display:none"></div>
     </div>
-    <div class="metric-grid" id="metricGrid"></div>
-    <div class="dist-chart" id="distChart"></div>
-  </div>
 
-  <p class="footer">Nota mínima de aprobación: 60 puntos</p>
+    <hr class="divider">
+
+    <div class="stats-section" id="statsPrimer">
+      <h2>Estadísticas — Primer turno</h2>
+      <p class="stats-sub" id="primerSub"></p>
+      <div class="stats-tabs">
+        <button class="tab-btn active" onclick="setTab('primer','all', this)">Todos</button>
+        <button class="tab-btn" onclick="setTab('primer','pass', this)">Aprobados</button>
+        <button class="tab-btn" onclick="setTab('primer','fail', this)">Reprobados</button>
+      </div>
+      <div class="metric-grid" id="metricGrid-primer"></div>
+      <div class="dist-chart" id="distChart-primer"></div>
+      <div class="hist-axis"></div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="stats-section" id="statsSegundo">
+      <h2>Estadísticas — Segundo turno (recuperatorio)</h2>
+      <p class="stats-sub" id="segundoSub"></p>
+      <div class="stats-tabs">
+        <button class="tab-btn active" onclick="setTab('segundo','all', this)">Todos</button>
+        <button class="tab-btn" onclick="setTab('segundo','pass', this)">Aprobados</button>
+        <button class="tab-btn" onclick="setTab('segundo','fail', this)">Reprobados</button>
+      </div>
+      <div class="metric-grid" id="metricGrid-segundo"></div>
+      <div class="dist-chart" id="distChart-segundo"></div>
+      <div class="hist-axis"></div>
+    </div>
+
+    <p class="footer" id="footerNote"></p>
+  </div>
 </div>
 
 <script>
-const STUDENTS = [{"id":"12419529","name":"Adrian Alejandro Alarcon Tirado","score":130,"obs":""},{"id":"8466835","name":"Diego Alcázar Gonzales","score":70,"obs":""},{"id":"13119470","name":"Rhio Lee Lineth Ali Tito","score":55,"obs":""},{"id":"8392399","name":"Adrián Nicolás Almaraz Vega","score":92.5,"obs":""},{"id":"8343710","name":"Alba Bautista Ayaviri","score":65,"obs":""},{"id":"13550931","name":"Estefania Emily Benitez Salas","score":102.5,"obs":"Buen trabajo ! Continua con el esfuerzo."},{"id":"8309678","name":"Abril Ariana Bernal Gómez","score":50,"obs":""},{"id":"","name":"Luciana Valentina Bustillos Enriquez","score":null,"obs":"No dio examen"},{"id":"","name":"Ayrton Limber Cabrera Orue","score":null,"obs":"No dio examen"},{"id":"12421206","name":"Sebastián Alejandro Cajias Casanova","score":114,"obs":""},{"id":"10928511","name":"Mariana Rosario Canaviri Sillerico","score":39,"obs":""},{"id":"6960021","name":"Valentina Valeria Canedo Lemaitre","score":90,"obs":""},{"id":"12978149","name":"Edilson Erick Carrillo Huanca","score":55.5,"obs":""},{"id":"9987617","name":"Catherine Alexandra Carvajal Cuentas","score":25,"obs":""},{"id":"11063636","name":"Juan Antonio Clavijo Vega","score":35,"obs":""},{"id":"9893045","name":"Ronald Cruz Coharite Mamani","score":137.5,"obs":""},{"id":"8469600","name":"Leandro David Cusicanqui Zárate","score":95,"obs":""},{"id":"8482275","name":"Oscar Ignacio Díaz Pacheco","score":13,"obs":""},{"id":"13732426","name":"Jorge Andrés Garcia Irrazabal","score":25,"obs":""},{"id":"10642109","name":"José Arturo García Vega","score":50,"obs":""},{"id":"8443793","name":"Fabio Luciano Gómez Tapia","score":57.5,"obs":"Nota a revisar"},{"id":"10914809","name":"Gustavo Gabriel Gonzales Urquizo","score":83,"obs":""},{"id":"8349547","name":"Nataly Rosario Huanca Choque","score":30,"obs":""},{"id":"6860794","name":"Yarid Nicole Huasco Canaviri","score":5,"obs":""},{"id":"8344263","name":"Deyna Lecoña Arratia","score":70,"obs":""},{"id":"6192739","name":"Marco Antonio Leyva Gutierrez","score":63,"obs":""},{"id":"12895648","name":"Cristian Henry Lorberg Saavedra","score":20,"obs":""},{"id":"8360619","name":"Sofia Melissa Mamani Flores","score":87.5,"obs":""},{"id":"8481161","name":"Jorge Andre Manrique Rodríguez","score":55,"obs":""},{"id":"8847467","name":"Daniela Margaret Medina Sandy","score":77.5,"obs":""},{"id":"12800326","name":"Brayan Mendoza Mamani","score":45.5,"obs":""},{"id":"6963319","name":"Alejandro Kenjiro Miyauchi Flores","score":15,"obs":""},{"id":"12959501","name":"José Ignacio Molina Revollo","score":50,"obs":""},{"id":"6846633","name":"Natalia Pardo Coss","score":1,"obs":""},{"id":"9872821","name":"Walter Ruben Pasten Vera","score":17.5,"obs":""},{"id":"6961786","name":"Mayte Ibalú Portillo Gonzales","score":35,"obs":""},{"id":"12361431","name":"Alessandra Puma Cabrera","score":24.5,"obs":""},{"id":"12454204","name":"Libia Alessandra Quisbert Ticona","score":30,"obs":""},{"id":"6839463","name":"Rodrigo Serafín Rocha Conde","score":55,"obs":""},{"id":"10018438","name":"Laura Adriana Rojas Martinez","score":20,"obs":""},{"id":"13157830","name":"Diago Erick Rojas Soto","score":114,"obs":""},{"id":"8435547","name":"Rainer Enrique Saavedra Peña","score":76,"obs":""},{"id":"9121680","name":"Ignacio David Salmon Marquez","score":150,"obs":""},{"id":"10953335","name":"Sebastian Omar Sandoval Leon","score":42.5,"obs":""},{"id":"7896666","name":"Sofia Martina Urquieta Quilla","score":70,"obs":""},{"id":"8469997","name":"Juan Pablo Vasquez Cadima","score":25,"obs":""},{"id":"13246096","name":"Mathias Leonardo Vedia Muñoz","score":20,"obs":""},{"id":"10900291","name":"Edgar Ismael Vega Chuquimia","score":70,"obs":""},{"id":"13121354","name":"Joaquin Diego Von Borries Velasco","score":30,"obs":""}];
-
 const PASS = 60;
+let MAXV = { primer: null, segundo: null };
+let tabState = { primer: 'all', segundo: 'all' };
+
+const STUDENTS = [{"id":"","name":"Luciana Valentina Bustillos Enriquez","primer":null,"segundo":null,"sistema":0,"ensayo":null,"obs":"No se presento al recuperatorio"},{"id":"6860794","name":"Yarid Nicole Huasco Canaviri","primer":5,"segundo":null,"sistema":5,"ensayo":null,"obs":"No se presento al recuperatorio"},{"id":"8482275","name":"Oscar Ignacio Díaz Pacheco","primer":13,"segundo":null,"sistema":13,"ensayo":null,"obs":"No se presento al recuperatorio"},{"id":"9872821","name":"Walter Ruben Pasten Vera","primer":17.5,"segundo":null,"sistema":17.5,"ensayo":null,"obs":"No se presento al recuperatorio"},{"id":"9987617","name":"Catherine Alexandra Carvajal Cuentas","primer":25,"segundo":null,"sistema":25,"ensayo":null,"obs":"No se presento al recuperatorio"},{"id":"12895648","name":"Cristian Henry Lorberg Saavedra","primer":20,"segundo":30,"sistema":30,"ensayo":null,"obs":"No habilita"},{"id":"6961786","name":"Mayte Ibalú Portillo Gonzales","primer":35,"segundo":44,"sistema":44,"ensayo":null,"obs":"No habilita"},{"id":"9093151","name":"Ayrton Limber Cabrera Orue","primer":null,"segundo":43,"sistema":43,"ensayo":null,"obs":"No habilita"},{"id":"10018438","name":"Laura Adriana Rojas Martinez","primer":20,"segundo":43,"sistema":46,"ensayo":null,"obs":"No habilita"},{"id":"12361431","name":"Alessandra Puma Cabrera","primer":24.5,"segundo":45,"sistema":50,"ensayo":null,"obs":"No habilita"},{"id":"12800326","name":"Brayan Mendoza Mamani","primer":45.5,"segundo":45,"sistema":45.5,"ensayo":null,"obs":"No habilita"},{"id":"8349547","name":"Nataly Rosario Huanca Choque","primer":30,"segundo":56,"sistema":56,"ensayo":null,"obs":"Tienes 56 incluso sumando puntos extras. Pero, dado que te faltan solo algunos puntos. Estás habilitada."},{"id":"6192739","name":"Marco Antonio Leyva Gutierrez","primer":63,"segundo":null,"sistema":63,"ensayo":null,"obs":"Bien !"},{"id":"8343710","name":"Alba Bautista Ayaviri","primer":65,"segundo":null,"sistema":65,"ensayo":null,"obs":"Bien !"},{"id":"6963319","name":"Alejandro Kenjiro Miyauchi Flores","primer":15,"segundo":65,"sistema":65,"ensayo":null,"obs":"Bien !"},{"id":"8466835","name":"Diego Alcázar Gonzales","primer":70,"segundo":null,"sistema":70,"ensayo":null,"obs":"Bien !"},{"id":"8344263","name":"Deyna Lecoña Arratia","primer":70,"segundo":null,"sistema":70,"ensayo":null,"obs":"Bien !"},{"id":"7896666","name":"Sofia Martina Urquieta Quilla","primer":70,"segundo":null,"sistema":70,"ensayo":null,"obs":"Bien !"},{"id":"10900291","name":"Edgar Ismael Vega Chuquimia","primer":70,"segundo":null,"sistema":70,"ensayo":null,"obs":"Bien !"},{"id":"13246096","name":"Mathias Leonardo Vedia Muñoz","primer":20,"segundo":72,"sistema":72,"ensayo":null,"obs":"Bien !"},{"id":"12454204","name":"Libia Alessandra Quisbert Ticona","primer":30,"segundo":76,"sistema":76,"ensayo":null,"obs":"Bien !"},{"id":"8435547","name":"Rainer Enrique Saavedra Peña","primer":76,"segundo":null,"sistema":76,"ensayo":null,"obs":"Bien !"},{"id":"8847467","name":"Daniela Margaret Medina Sandy","primer":77.5,"segundo":null,"sistema":77.5,"ensayo":null,"obs":"Bien !"},{"id":"10914809","name":"Gustavo Gabriel Gonzales Urquizo","primer":83,"segundo":null,"sistema":83,"ensayo":null,"obs":"Bien !"},{"id":"11063636","name":"Juan Antonio Clavijo Vega","primer":35,"segundo":86,"sistema":86,"ensayo":null,"obs":"Bien !"},{"id":"8360619","name":"Sofia Melissa Mamani Flores","primer":87.5,"segundo":null,"sistema":87.5,"ensayo":null,"obs":"Bien !"},{"id":"6846633","name":"Natalia Pardo Coss","primer":1,"segundo":89,"sistema":89,"ensayo":null,"obs":"Bien !"},{"id":"6960021","name":"Valentina Valeria Canedo Lemaitre","primer":90,"segundo":null,"sistema":90,"ensayo":null,"obs":"Bien !"},{"id":"12978149","name":"Edilson Erick Carrillo Huanca","primer":55.5,"segundo":90,"sistema":90,"ensayo":null,"obs":"Bien !"},{"id":"8342399","name":"Adrián Nicolás Almaraz Vega","primer":92.5,"segundo":null,"sistema":92.5,"ensayo":null,"obs":"Bien !"},{"id":"8469600","name":"Leandro David Cusicanqui Zárate","primer":95,"segundo":null,"sistema":95,"ensayo":null,"obs":"Bien !"},{"id":"8443793","name":"Fabio Luciano Gómez Tapia","primer":57.5,"segundo":95,"sistema":95,"ensayo":null,"obs":"Bien !"},{"id":"6839463","name":"Rodrigo Serafín Rocha Conde","primer":55,"segundo":95,"sistema":95,"ensayo":null,"obs":"Bien !"},{"id":"12959501","name":"José Ignacio Molina Revollo","primer":50,"segundo":100,"sistema":100,"ensayo":null,"obs":"Buen trabajo !"},{"id":"8309678","name":"Abril Ariana Bernal Gómez","primer":50,"segundo":101,"sistema":100,"ensayo":null,"obs":"Bien !"},{"id":"13550931","name":"Estefania Emily Benitez Salas","primer":102.5,"segundo":null,"sistema":100,"ensayo":null,"obs":"Buen trabajo ! Continua con el esfuerzo."},{"id":"10953335","name":"Sebastian Omar Sandoval Leon","primer":42.5,"segundo":107,"sistema":100,"ensayo":null,"obs":"Bien !"},{"id":"8469997","name":"Juan Pablo Vasquez Cadima","primer":25,"segundo":107,"sistema":100,"ensayo":null,"obs":"Bien !"},{"id":"13121354","name":"Joaquin Diego Von Borries Velasco","primer":30,"segundo":110,"sistema":100,"ensayo":null,"obs":"Bien !"},{"id":"10642109","name":"José Arturo García Vega","primer":50,"segundo":112,"sistema":100,"ensayo":null,"obs":"Bien !"},{"id":"8481161","name":"Jorge Andre Manrique Rodríguez","primer":55,"segundo":113,"sistema":100,"ensayo":null,"obs":"Bien !"},{"id":"12421206","name":"Sebastián Alejandro Cajias Casanova","primer":114,"segundo":null,"sistema":100,"ensayo":null,"obs":"Bien !"},{"id":"13157830","name":"Diago Erick Rojas Soto","primer":114,"segundo":null,"sistema":100,"ensayo":null,"obs":"Bien !"},{"id":"13732426","name":"Jorge Andrés Garcia Irrazabal","primer":25,"segundo":117,"sistema":100,"ensayo":null,"obs":"Bien !"},{"id":"12419529","name":"adrian Alejandro Alarcon Tirado","primer":130,"segundo":null,"sistema":100,"ensayo":null,"obs":"Bien !"},{"id":"10928511","name":"Mariana Rosario Canaviri Sillerico","primer":39,"segundo":130,"sistema":100,"ensayo":null,"obs":"Bien !"},{"id":"13119470","name":"Rhio Lee Lineth Ali Tito","primer":55,"segundo":137,"sistema":100,"ensayo":null,"obs":"No te vuelvas a confiar !"},{"id":"9893045","name":"Ronald Cruz Coharite Mamani","primer":137.5,"segundo":null,"sistema":100,"ensayo":null,"obs":"Bien !"},{"id":"9121680","name":"IGNACIO DAVID SALMON MARQUEZ","primer":150,"segundo":null,"sistema":100,"ensayo":null,"obs":"Bien !"}];
 
 function toTitleCase(s) {
-  return s.replace(/\w\S*/g, t => t.charAt(0).toUpperCase() + t.substr(1).toLowerCase());
+  return s.replace(/\S+/g, t => t.charAt(0).toUpperCase() + t.slice(1).toLowerCase());
+}
+
+(function init() {
+  const primerScores = STUDENTS.map(s => s.primer).filter(v => v !== null);
+  const segundoScores = STUDENTS.map(s => s.segundo).filter(v => v !== null);
+  MAXV.primer = primerScores.length ? Math.max(...primerScores) : null;
+  MAXV.segundo = segundoScores.length ? Math.max(...segundoScores) : null;
+
+  document.getElementById('loadingMsg').style.display = 'none';
+  document.getElementById('searchWrap').classList.add('visible');
+  document.getElementById('statsPrimer').classList.add('visible');
+  document.getElementById('statsSegundo').classList.add('visible');
+  document.getElementById('footerNote').textContent = `Nota mínima de aprobación: ${PASS} puntos`;
+  document.getElementById('primerSub').textContent = `Sobre ${STUDENTS.length} estudiantes registrados`;
+  document.getElementById('segundoSub').textContent = `Solo estudiantes que tomaron el recuperatorio (${segundoScores.length} de ${STUDENTS.length})`;
+
+  renderStats('primer');
+  renderStats('segundo');
+})();
+
+function fmtVal(v) {
+  if (v === null || v === undefined) return '—';
+  return Number.isInteger(v) ? String(v) : v.toFixed(1);
 }
 
 function lookup() {
@@ -192,39 +241,43 @@ function lookup() {
   if (!q) return;
   const st = STUDENTS.find(s => s.id === q);
   if (!st) { err.classList.add('visible'); return; }
+
   document.getElementById('rName').textContent = toTitleCase(st.name);
   document.getElementById('rId').textContent = 'CI: ' + (st.id || '—');
+  document.getElementById('rPrimer').textContent = fmtVal(st.primer);
+  document.getElementById('rSegundo').textContent = fmtVal(st.segundo);
+  document.getElementById('rSistema').textContent = fmtVal(st.sistema);
+  document.getElementById('rEnsayo').textContent = fmtVal(st.ensayo);
+
   const chip = document.getElementById('rChip');
-  const obsBox = document.getElementById('rObs');
-  if (st.score === null) {
-    document.getElementById('rScore').textContent = '—';
-    chip.textContent = 'Ausente';
+  if (st.sistema === null) {
+    chip.textContent = 'Sin nota';
     chip.className = 'status-chip chip-absent';
   } else {
-    document.getElementById('rScore').textContent = st.score % 1 === 0 ? st.score : st.score.toFixed(1);
-    const pass = st.score >= PASS;
+    const pass = st.sistema >= PASS;
     chip.textContent = pass ? 'Aprobado ✓' : 'Reprobado ✗';
     chip.className = 'status-chip ' + (pass ? 'chip-pass' : 'chip-fail');
   }
+
+  const obsBox = document.getElementById('rObs');
   if (st.obs) { obsBox.textContent = st.obs; obsBox.style.display = 'block'; }
   else { obsBox.style.display = 'none'; }
+
   card.classList.add('visible');
 }
 
 document.getElementById('idInput').addEventListener('keydown', e => { if (e.key === 'Enter') lookup(); });
 
-let currentTab = 'all';
-
-function getSubset(tab) {
-  const scored = STUDENTS.filter(s => s.score !== null);
+function getSubset(field, tab) {
+  const scored = STUDENTS.filter(s => s[field] !== null);
   if (tab === 'all') return scored;
-  if (tab === 'pass') return scored.filter(s => s.score >= PASS);
-  return scored.filter(s => s.score < PASS);
+  if (tab === 'pass') return scored.filter(s => s[field] >= PASS);
+  return scored.filter(s => s[field] < PASS);
 }
 
-function stats(arr) {
+function stats(arr, field) {
   if (!arr.length) return {};
-  const s = arr.map(x => x.score).sort((a, b) => a - b);
+  const s = arr.map(x => x[field]).sort((a, b) => a - b);
   const n = s.length;
   const mean = s.reduce((a, b) => a + b, 0) / n;
   const mid = Math.floor(n / 2);
@@ -233,15 +286,17 @@ function stats(arr) {
 }
 
 function fmt(v) {
-  if (v === undefined) return '—';
+  if (v === undefined || v === null) return '—';
   return Number.isInteger(v) ? v : v.toFixed(1);
 }
 
-function renderMetrics(tab) {
-  const sub = getSubset(tab);
-  const st = stats(sub);
-  const grid = document.getElementById('metricGrid');
-  const nCard = tab === 'all' ? `<div class="metric-card"><div class="metric-label">Estudiantes</div><div class="metric-value">${st.n}</div></div>` : '';
+function renderStats(field) {
+  const tab = tabState[field];
+  const sub = getSubset(field, tab);
+  const st = stats(sub, field);
+
+  const grid = document.getElementById('metricGrid-' + field);
+  const nCard = tab === 'all' ? `<div class="metric-card"><div class="metric-label">Estudiantes</div><div class="metric-value">${st.n || 0}</div></div>` : '';
   grid.innerHTML = `
     ${nCard}
     <div class="metric-card"><div class="metric-label">Máximo</div><div class="metric-value">${fmt(st.max)}</div></div>
@@ -249,46 +304,41 @@ function renderMetrics(tab) {
     <div class="metric-card"><div class="metric-label">Media</div><div class="metric-value">${fmt(st.mean)}</div></div>
     <div class="metric-card"><div class="metric-label">Mediana</div><div class="metric-value">${fmt(st.median)}</div></div>
   `;
-}
 
-function renderDist(tab) {
-  const sub = getSubset(tab);
+  const maxv = MAXV[field];
+  const hi = maxv && maxv > 100 ? maxv + 1 : 101;
   const bins = [
-    [0,20,'0–19'],
-    [20,40,'20–39'],
-    [40,60,'40–59'],
-    [60,80,'60–79'],
-    [80,100,'80–99'],
-    [100,151,'100+'],
+    [0, 20, '0–19'],
+    [20, 40, '20–39'],
+    [40, 60, '40–59'],
+    [60, 80, '60–79'],
+    [80, 100, '80–99'],
+    [100, hi, '100+'],
   ];
-  const counts = bins.map(([lo, hi, lbl]) => ({
+  const counts = bins.map(([lo, hiB, lbl]) => ({
     lbl,
-    n: sub.filter(s => s.score >= lo && s.score < hi).length,
+    n: sub.filter(s => s[field] >= lo && s[field] < hiB).length,
     pass: lo >= PASS
   }));
   const maxN = Math.max(...counts.map(c => c.n), 1);
-  const chart = document.getElementById('distChart');
-  chart.innerHTML = counts.map(c => {
-    const pct = Math.round((c.n / maxN) * 100);
+  document.getElementById('distChart-' + field).innerHTML = counts.map(c => {
+    const pct = Math.max(Math.round((c.n / maxN) * 100), c.n > 0 ? 4 : 0);
     const color = c.pass ? 'var(--bar-pass)' : 'var(--bar-fail)';
-    return `<div class="bar-row">
-      <span class="bar-label">${c.lbl}</span>
-      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${color}">${c.n > 0 ? c.n : ''}</div></div>
-      <span class="bar-count">${c.n}</span>
+    return `<div class="hist-col">
+      <span class="hist-value">${c.n > 0 ? c.n : ''}</span>
+      <div class="hist-bar" style="height:${pct}%;background:${color}"></div>
+      <span class="hist-label">${c.lbl}</span>
     </div>`;
   }).join('');
 }
 
-function setTab(tab, btn) {
-  currentTab = tab;
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+function setTab(field, tab, btn) {
+  tabState[field] = tab;
+  const section = field === 'primer' ? document.getElementById('statsPrimer') : document.getElementById('statsSegundo');
+  section.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  renderMetrics(tab);
-  renderDist(tab);
+  renderStats(field);
 }
-
-renderMetrics('all');
-renderDist('all');
 </script>
 </body>
 </html>
