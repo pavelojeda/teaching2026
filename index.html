@@ -21,6 +21,9 @@
     --absent-bg: #f1efe8;
     --absent-text: #5f5e5a;
     --absent-border: #888780;
+    --warn-bg: #fef7e0;
+    --warn-text: #6b4a00;
+    --warn-border: #d4a017;
     --accent: #534ab7;
     --accent-light: #eeedfe;
     --accent-text: #3c3489;
@@ -45,6 +48,9 @@
       --absent-bg: #2c2c2a;
       --absent-text: #b4b2a9;
       --absent-border: #5f5e5a;
+      --warn-bg: #3a2c00;
+      --warn-text: #f0cc7a;
+      --warn-border: #8a6500;
       --accent-light: #26215c;
       --accent-text: #afa9ec;
       --bar-pass: #97c459;
@@ -55,12 +61,14 @@
   body { background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem; }
   .container { max-width: 760px; margin: 0 auto; }
   h1 { font-size: 1.5rem; font-weight: 500; margin-bottom: 0.25rem; }
-  .subtitle { font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1.5rem; }
+  .subtitle { font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1rem; }
 
-  .loading-msg { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem; }
+  .warn-banner {
+    background: var(--warn-bg); color: var(--warn-text); border: 0.5px solid var(--warn-border);
+    border-radius: 8px; padding: 0.65rem 1rem; font-size: 0.82rem; margin-bottom: 1.5rem;
+    line-height: 1.5;
+  }
 
-  .search-wrap { display: none; }
-  .search-wrap.visible { display: block; }
   .search-box { display: flex; gap: 10px; margin-bottom: 1.5rem; }
   .search-box input {
     flex: 1; padding: 0.65rem 1rem; border: 0.5px solid var(--border-strong);
@@ -77,31 +85,35 @@
 
   .result-card {
     background: var(--card); border: 0.5px solid var(--border);
-    border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1.5rem;
-    display: none;
+    border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; display: none;
   }
   .result-card.visible { display: block; }
-  .result-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
+  .result-header { margin-bottom: 1rem; }
   .result-name { font-size: 1.1rem; font-weight: 500; }
-  .result-id { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+  .result-id { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; margin-bottom: 0.75rem; }
+
   .status-chip {
     display: inline-block; padding: 4px 12px; border-radius: 20px;
-    font-size: 0.8rem; font-weight: 500; border: 0.5px solid; flex-shrink: 0;
+    font-size: 0.8rem; font-weight: 500; border: 0.5px solid;
   }
   .chip-pass { background: var(--pass-bg); color: var(--pass-text); border-color: var(--pass-border); }
   .chip-fail { background: var(--fail-bg); color: var(--fail-text); border-color: var(--fail-border); }
   .chip-absent { background: var(--absent-bg); color: var(--absent-text); border-color: var(--absent-border); }
 
-  .field-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 1rem; }
+  .field-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-top: 1rem; margin-bottom: 1rem; }
   .field-card { background: var(--absent-bg); border-radius: 8px; padding: 0.7rem 0.9rem; }
-  .field-label { font-size: 0.72rem; color: var(--text-muted); margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.03em; }
+  .field-label { font-size: 0.7rem; color: var(--text-muted); margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.03em; }
   .field-value { font-size: 1.3rem; font-weight: 500; }
+  .field-card.highlight { background: var(--accent-light); }
+  .field-card.highlight .field-label { color: var(--accent-text); }
 
   .obs-box {
-    background: var(--absent-bg); border-radius: 6px; padding: 0.6rem 0.9rem;
-    font-size: 0.875rem; color: var(--text-muted); margin-top: 0.5rem;
-    border-left: 3px solid var(--absent-border);
+    background: var(--card); border: 0.5px solid var(--border-strong);
+    border-radius: 8px; padding: 0.85rem 1.1rem; margin-top: 0.75rem;
+    text-align: center; font-size: 0.9rem; line-height: 1.5; color: var(--text);
   }
+  .obs-title { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 0.4rem; }
+
   .error-msg {
     background: var(--fail-bg); color: var(--fail-text);
     border: 0.5px solid var(--fail-border); border-radius: 8px;
@@ -109,8 +121,7 @@
   }
   .error-msg.visible { display: block; }
 
-  .stats-section { display: none; margin-top: 2.5rem; }
-  .stats-section.visible { display: block; }
+  .stats-section { margin-top: 2.5rem; }
   .stats-section h2 { font-size: 0.8rem; font-weight: 500; margin-bottom: 0.25rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
   .stats-sub { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1rem; }
   .stats-tabs { display: flex; gap: 6px; margin-bottom: 1.25rem; flex-wrap: wrap; }
@@ -123,12 +134,14 @@
   .metric-card { background: var(--card); border: 0.5px solid var(--border); border-radius: 8px; padding: 0.85rem 1rem; }
   .metric-label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px; }
   .metric-value { font-size: 1.5rem; font-weight: 500; }
+
   .dist-chart { margin-top: 1rem; display: flex; align-items: flex-end; gap: 10px; height: 160px; padding-top: 1.5rem; }
   .hist-col { flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; }
   .hist-value { font-size: 0.8rem; font-weight: 500; margin-bottom: 4px; color: var(--text); }
   .hist-bar { width: 100%; max-width: 48px; border-radius: 5px 5px 2px 2px; transition: height 0.4s ease; min-height: 2px; }
   .hist-label { font-size: 0.72rem; color: var(--text-muted); margin-top: 8px; white-space: nowrap; }
   .hist-axis { border-top: 1px solid var(--border); }
+
   .divider { border: none; border-top: 0.5px solid var(--border); margin: 2rem 0; }
   .footer { font-size: 0.75rem; color: var(--text-muted); text-align: center; margin-top: 2rem; }
 </style>
@@ -138,98 +151,66 @@
   <h1>Notas — Parcial 1</h1>
   <p class="subtitle">Consulta tu calificación ingresando tu número de cédula</p>
 
-  <p class="loading-msg" id="loadingMsg">Cargando notas…</p>
-
-  <div class="search-wrap" id="searchWrap">
-    <div class="search-box">
-      <input type="text" id="idInput" placeholder="Número de cédula / ID" inputmode="numeric" autocomplete="off" />
-      <button onclick="lookup()">Buscar</button>
-    </div>
-    <div class="error-msg" id="errorMsg">No se encontró ningún estudiante con ese ID.</div>
-
-    <div class="result-card" id="resultCard">
-      <div class="result-header">
-        <div>
-          <div class="result-name" id="rName"></div>
-          <div class="result-id" id="rId"></div>
-        </div>
-        <div class="status-chip" id="rChip"></div>
-      </div>
-      <div class="field-grid">
-        <div class="field-card"><div class="field-label">Primer turno</div><div class="field-value" id="rPrimer"></div></div>
-        <div class="field-card"><div class="field-label">Segundo turno</div><div class="field-value" id="rSegundo"></div></div>
-        <div class="field-card"><div class="field-label">Sistema</div><div class="field-value" id="rSistema"></div></div>
-        <div class="field-card"><div class="field-label">Ensayo</div><div class="field-value" id="rEnsayo"></div></div>
-      </div>
-      <div class="obs-box" id="rObs" style="display:none"></div>
-    </div>
-
-    <hr class="divider">
-
-    <div class="stats-section" id="statsPrimer">
-      <h2>Estadísticas — Primer turno</h2>
-      <p class="stats-sub" id="primerSub"></p>
-      <div class="stats-tabs">
-        <button class="tab-btn active" onclick="setTab('primer','all', this)">Todos</button>
-        <button class="tab-btn" onclick="setTab('primer','pass', this)">Aprobados</button>
-        <button class="tab-btn" onclick="setTab('primer','fail', this)">Reprobados</button>
-      </div>
-      <div class="metric-grid" id="metricGrid-primer"></div>
-      <div class="dist-chart" id="distChart-primer"></div>
-      <div class="hist-axis"></div>
-    </div>
-
-    <hr class="divider">
-
-    <div class="stats-section" id="statsSegundo">
-      <h2>Estadísticas — Segundo turno (recuperatorio)</h2>
-      <p class="stats-sub" id="segundoSub"></p>
-      <div class="stats-tabs">
-        <button class="tab-btn active" onclick="setTab('segundo','all', this)">Todos</button>
-        <button class="tab-btn" onclick="setTab('segundo','pass', this)">Aprobados</button>
-        <button class="tab-btn" onclick="setTab('segundo','fail', this)">Reprobados</button>
-      </div>
-      <div class="metric-grid" id="metricGrid-segundo"></div>
-      <div class="dist-chart" id="distChart-segundo"></div>
-      <div class="hist-axis"></div>
-    </div>
-
-    <p class="footer" id="footerNote"></p>
+  <div class="warn-banner">
+    ⚠️ Las notas publicadas aquí son referenciales, producto del proceso de registro en el sistema oficial podrían ocurrir cambios en el cálculo final reportado por el sistema. Sin embargo, los cambios esperados son marginales únicamente.
   </div>
+
+  <div class="search-box">
+    <input type="text" id="idInput" placeholder="Número de cédula / ID" inputmode="numeric" autocomplete="off" />
+    <button onclick="lookup()">Buscar</button>
+  </div>
+  <div class="error-msg" id="errorMsg">No se encontró ningún estudiante con ese ID.</div>
+
+  <div class="result-card" id="resultCard">
+    <div class="result-header">
+      <div class="result-name" id="rName"></div>
+      <div class="result-id" id="rId"></div>
+      <div class="status-chip" id="rChip"></div>
+    </div>
+    <div class="field-grid">
+      <div class="field-card"><div class="field-label">Primer turno</div><div class="field-value" id="rPrimer"></div></div>
+      <div class="field-card"><div class="field-label">Segundo turno</div><div class="field-value" id="rSegundo"></div></div>
+      <div class="field-card"><div class="field-label">Nota sistema (P1)</div><div class="field-value" id="rSistema"></div></div>
+      <div class="field-card"><div class="field-label">Ensayo</div><div class="field-value" id="rEnsayo"></div></div>
+      <div class="field-card"><div class="field-label">Habilitación</div><div class="field-value" id="rHabilitacion"></div></div>
+      <div class="field-card highlight"><div class="field-label">Nota final</div><div class="field-value" id="rFinal"></div></div>
+    </div>
+    <div class="obs-box" id="rObs" style="display:none">
+      <div class="obs-title">Observaciones</div>
+      <div id="rObsText"></div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="stats-section">
+    <h2>Estadísticas — Nota final</h2>
+    <p class="stats-sub" id="statsSub"></p>
+    <div class="stats-tabs">
+      <button class="tab-btn active" onclick="setTab('all', this)">Todos</button>
+      <button class="tab-btn" onclick="setTab('pass', this)">Aprobados</button>
+      <button class="tab-btn" onclick="setTab('fail', this)">Reprobados</button>
+    </div>
+    <div class="metric-grid" id="metricGrid"></div>
+    <div class="dist-chart" id="distChart"></div>
+    <div class="hist-axis"></div>
+  </div>
+
+  <p class="footer">Nota mínima de aprobación: 51 puntos</p>
 </div>
 
 <script>
-const PASS = 60;
-let MAXV = { primer: null, segundo: null };
-let tabState = { primer: 'all', segundo: 'all' };
+const PASS = 51;
+let currentTab = 'all';
 
-const STUDENTS = [{"id":"","name":"Luciana Valentina Bustillos Enriquez","primer":null,"segundo":null,"sistema":0,"ensayo":null,"obs":"No se presento al recuperatorio"},{"id":"6860794","name":"Yarid Nicole Huasco Canaviri","primer":5,"segundo":null,"sistema":5,"ensayo":null,"obs":"No se presento al recuperatorio"},{"id":"8482275","name":"Oscar Ignacio Díaz Pacheco","primer":13,"segundo":null,"sistema":13,"ensayo":null,"obs":"No se presento al recuperatorio"},{"id":"9872821","name":"Walter Ruben Pasten Vera","primer":17.5,"segundo":null,"sistema":17.5,"ensayo":null,"obs":"No se presento al recuperatorio"},{"id":"9987617","name":"Catherine Alexandra Carvajal Cuentas","primer":25,"segundo":null,"sistema":25,"ensayo":null,"obs":"No se presento al recuperatorio"},{"id":"12895648","name":"Cristian Henry Lorberg Saavedra","primer":20,"segundo":30,"sistema":30,"ensayo":null,"obs":"No habilita"},{"id":"6961786","name":"Mayte Ibalú Portillo Gonzales","primer":35,"segundo":44,"sistema":44,"ensayo":null,"obs":"No habilita"},{"id":"9093151","name":"Ayrton Limber Cabrera Orue","primer":null,"segundo":43,"sistema":43,"ensayo":null,"obs":"No habilita"},{"id":"10018438","name":"Laura Adriana Rojas Martinez","primer":20,"segundo":43,"sistema":46,"ensayo":null,"obs":"No habilita"},{"id":"12361431","name":"Alessandra Puma Cabrera","primer":24.5,"segundo":45,"sistema":50,"ensayo":null,"obs":"No habilita"},{"id":"12800326","name":"Brayan Mendoza Mamani","primer":45.5,"segundo":45,"sistema":45.5,"ensayo":null,"obs":"No habilita"},{"id":"8349547","name":"Nataly Rosario Huanca Choque","primer":30,"segundo":56,"sistema":56,"ensayo":null,"obs":"Tienes 56 incluso sumando puntos extras. Pero, dado que te faltan solo algunos puntos. Estás habilitada."},{"id":"6192739","name":"Marco Antonio Leyva Gutierrez","primer":63,"segundo":null,"sistema":63,"ensayo":null,"obs":"Bien !"},{"id":"8343710","name":"Alba Bautista Ayaviri","primer":65,"segundo":null,"sistema":65,"ensayo":null,"obs":"Bien !"},{"id":"6963319","name":"Alejandro Kenjiro Miyauchi Flores","primer":15,"segundo":65,"sistema":65,"ensayo":null,"obs":"Bien !"},{"id":"8466835","name":"Diego Alcázar Gonzales","primer":70,"segundo":null,"sistema":70,"ensayo":null,"obs":"Bien !"},{"id":"8344263","name":"Deyna Lecoña Arratia","primer":70,"segundo":null,"sistema":70,"ensayo":null,"obs":"Bien !"},{"id":"7896666","name":"Sofia Martina Urquieta Quilla","primer":70,"segundo":null,"sistema":70,"ensayo":null,"obs":"Bien !"},{"id":"10900291","name":"Edgar Ismael Vega Chuquimia","primer":70,"segundo":null,"sistema":70,"ensayo":null,"obs":"Bien !"},{"id":"13246096","name":"Mathias Leonardo Vedia Muñoz","primer":20,"segundo":72,"sistema":72,"ensayo":null,"obs":"Bien !"},{"id":"12454204","name":"Libia Alessandra Quisbert Ticona","primer":30,"segundo":76,"sistema":76,"ensayo":null,"obs":"Bien !"},{"id":"8435547","name":"Rainer Enrique Saavedra Peña","primer":76,"segundo":null,"sistema":76,"ensayo":null,"obs":"Bien !"},{"id":"8847467","name":"Daniela Margaret Medina Sandy","primer":77.5,"segundo":null,"sistema":77.5,"ensayo":null,"obs":"Bien !"},{"id":"10914809","name":"Gustavo Gabriel Gonzales Urquizo","primer":83,"segundo":null,"sistema":83,"ensayo":null,"obs":"Bien !"},{"id":"11063636","name":"Juan Antonio Clavijo Vega","primer":35,"segundo":86,"sistema":86,"ensayo":null,"obs":"Bien !"},{"id":"8360619","name":"Sofia Melissa Mamani Flores","primer":87.5,"segundo":null,"sistema":87.5,"ensayo":null,"obs":"Bien !"},{"id":"6846633","name":"Natalia Pardo Coss","primer":1,"segundo":89,"sistema":89,"ensayo":null,"obs":"Bien !"},{"id":"6960021","name":"Valentina Valeria Canedo Lemaitre","primer":90,"segundo":null,"sistema":90,"ensayo":null,"obs":"Bien !"},{"id":"12978149","name":"Edilson Erick Carrillo Huanca","primer":55.5,"segundo":90,"sistema":90,"ensayo":null,"obs":"Bien !"},{"id":"8342399","name":"Adrián Nicolás Almaraz Vega","primer":92.5,"segundo":null,"sistema":92.5,"ensayo":null,"obs":"Bien !"},{"id":"8469600","name":"Leandro David Cusicanqui Zárate","primer":95,"segundo":null,"sistema":95,"ensayo":null,"obs":"Bien !"},{"id":"8443793","name":"Fabio Luciano Gómez Tapia","primer":57.5,"segundo":95,"sistema":95,"ensayo":null,"obs":"Bien !"},{"id":"6839463","name":"Rodrigo Serafín Rocha Conde","primer":55,"segundo":95,"sistema":95,"ensayo":null,"obs":"Bien !"},{"id":"12959501","name":"José Ignacio Molina Revollo","primer":50,"segundo":100,"sistema":100,"ensayo":null,"obs":"Buen trabajo !"},{"id":"8309678","name":"Abril Ariana Bernal Gómez","primer":50,"segundo":101,"sistema":100,"ensayo":null,"obs":"Bien !"},{"id":"13550931","name":"Estefania Emily Benitez Salas","primer":102.5,"segundo":null,"sistema":100,"ensayo":null,"obs":"Buen trabajo ! Continua con el esfuerzo."},{"id":"10953335","name":"Sebastian Omar Sandoval Leon","primer":42.5,"segundo":107,"sistema":100,"ensayo":null,"obs":"Bien !"},{"id":"8469997","name":"Juan Pablo Vasquez Cadima","primer":25,"segundo":107,"sistema":100,"ensayo":null,"obs":"Bien !"},{"id":"13121354","name":"Joaquin Diego Von Borries Velasco","primer":30,"segundo":110,"sistema":100,"ensayo":null,"obs":"Bien !"},{"id":"10642109","name":"José Arturo García Vega","primer":50,"segundo":112,"sistema":100,"ensayo":null,"obs":"Bien !"},{"id":"8481161","name":"Jorge Andre Manrique Rodríguez","primer":55,"segundo":113,"sistema":100,"ensayo":null,"obs":"Bien !"},{"id":"12421206","name":"Sebastián Alejandro Cajias Casanova","primer":114,"segundo":null,"sistema":100,"ensayo":null,"obs":"Bien !"},{"id":"13157830","name":"Diago Erick Rojas Soto","primer":114,"segundo":null,"sistema":100,"ensayo":null,"obs":"Bien !"},{"id":"13732426","name":"Jorge Andrés Garcia Irrazabal","primer":25,"segundo":117,"sistema":100,"ensayo":null,"obs":"Bien !"},{"id":"12419529","name":"adrian Alejandro Alarcon Tirado","primer":130,"segundo":null,"sistema":100,"ensayo":null,"obs":"Bien !"},{"id":"10928511","name":"Mariana Rosario Canaviri Sillerico","primer":39,"segundo":130,"sistema":100,"ensayo":null,"obs":"Bien !"},{"id":"13119470","name":"Rhio Lee Lineth Ali Tito","primer":55,"segundo":137,"sistema":100,"ensayo":null,"obs":"No te vuelvas a confiar !"},{"id":"9893045","name":"Ronald Cruz Coharite Mamani","primer":137.5,"segundo":null,"sistema":100,"ensayo":null,"obs":"Bien !"},{"id":"9121680","name":"IGNACIO DAVID SALMON MARQUEZ","primer":150,"segundo":null,"sistema":100,"ensayo":null,"obs":"Bien !"}];
+const STUDENTS = [{"id":"6960021","name":"Valentina Valeria Canedo Lemaitre","primer":90,"segundo":null,"sistema":90,"ensayo":95,"habilitacion":92.5,"final":92.5,"obs":"Bien !"},{"id":"","name":"Luciana Valentina Bustillos Enriquez","primer":null,"segundo":null,"sistema":0,"ensayo":null,"habilitacion":0,"final":0,"obs":"No se presento al recuperatorio"},{"id":"6839463","name":"Rodrigo Serafín Rocha Conde","primer":55,"segundo":95,"sistema":95,"ensayo":70,"habilitacion":82.5,"final":82.5,"obs":"Bien !"},{"id":"9872821","name":"Walter Ruben Pasten Vera","primer":17.5,"segundo":67,"sistema":67,"ensayo":70,"habilitacion":68.5,"final":68.5,"obs":""},{"id":"10928511","name":"Mariana Rosario Canaviri Sillerico","primer":39,"segundo":130,"sistema":100,"ensayo":90,"habilitacion":95,"final":95,"obs":"Bien !"},{"id":"8349547","name":"Nataly Rosario Huanca Choque","primer":30,"segundo":56,"sistema":60,"ensayo":60,"habilitacion":60,"final":58,"obs":"Tienes 56 incluso sumando puntos extras. Pero, dado que te faltan solo algunos puntos. Estás habilitada."},{"id":"8469997","name":"Juan Pablo Vasquez Cadima","primer":25,"segundo":107,"sistema":100,"ensayo":90,"habilitacion":95,"final":95,"obs":"Bien !"},{"id":"10953335","name":"Sebastian Omar Sandoval Leon","primer":42.5,"segundo":107,"sistema":100,"ensayo":90,"habilitacion":95,"final":95,"obs":"Bien !"},{"id":"6860794","name":"Yarid Nicole Huasco Canaviri","primer":5,"segundo":null,"sistema":5,"ensayo":null,"habilitacion":5,"final":null,"obs":"No se presento al recuperatorio"},{"id":"8342399","name":"Adrián Nicolás Almaraz Vega","primer":92.5,"segundo":null,"sistema":92.5,"ensayo":88,"habilitacion":90.25,"final":90.25,"obs":"Bien !"},{"id":"8360619","name":"Sofia Melissa Mamani Flores","primer":87.5,"segundo":null,"sistema":87.5,"ensayo":75,"habilitacion":81.25,"final":81.25,"obs":"Bien !"},{"id":"7896666","name":"Sofia Martina Urquieta Quilla","primer":70,"segundo":null,"sistema":70,"ensayo":95,"habilitacion":82.5,"final":82.5,"obs":"Bien !"},{"id":"8847467","name":"Daniela Margaret Medina Sandy","primer":77.5,"segundo":null,"sistema":77.5,"ensayo":100,"habilitacion":88.75,"final":88.75,"obs":"Bien !"},{"id":"8443793","name":"Fabio Luciano Gómez Tapia","primer":57.5,"segundo":95,"sistema":95,"ensayo":75,"habilitacion":85,"final":85,"obs":"Bien !"},{"id":"9093151","name":"Ayrton Limber Cabrera Orue","primer":null,"segundo":43,"sistema":60,"ensayo":60,"habilitacion":60,"final":43,"obs":"No habilita, pasaras al 2T del final, si apruebas lo harás con 51"},{"id":"13246096","name":"Mathias Leonardo Vedia Muñoz","primer":20,"segundo":72,"sistema":72,"ensayo":80,"habilitacion":76,"final":76,"obs":"Bien !"},{"id":"13119470","name":"Rhio Lee Lineth Ali Tito","primer":55,"segundo":137,"sistema":100,"ensayo":80,"habilitacion":90,"final":95,"obs":"No te vuelvas a confiar ! Tienes +5 por tu examen"},{"id":"6963319","name":"Alejandro Kenjiro Miyauchi Flores","primer":15,"segundo":65,"sistema":65,"ensayo":85,"habilitacion":75,"final":75,"obs":"Bien !"},{"id":"10900291","name":"Edgar Ismael Vega Chuquimia","primer":70,"segundo":null,"sistema":70,"ensayo":75,"habilitacion":72.5,"final":72.5,"obs":"Bien !"},{"id":"12959501","name":"José Ignacio Molina Revollo","primer":50,"segundo":100,"sistema":100,"ensayo":88,"habilitacion":94,"final":94,"obs":"Buen trabajo !"},{"id":"8482275","name":"Oscar Ignacio Díaz Pacheco","primer":13,"segundo":null,"sistema":13,"ensayo":80,"habilitacion":46.5,"final":null,"obs":"No habilita, pasaras al 2T del final. No se presento al recuperatorio"},{"id":"6961786","name":"Mayte Ibalú Portillo Gonzales","primer":35,"segundo":44,"sistema":60,"ensayo":60,"habilitacion":60,"final":44,"obs":"No habilita, pasaras al 2T del final, si apruebas lo harás con 51"},{"id":"12895648","name":"Cristian Henry Lorberg Saavedra","primer":20,"segundo":30,"sistema":60,"ensayo":60,"habilitacion":60,"final":30,"obs":"No habilita, pasaras al 2T del final, si apruebas lo harás con 51"},{"id":"10914809","name":"Gustavo Gabriel Gonzales Urquizo","primer":83,"segundo":null,"sistema":83,"ensayo":95,"habilitacion":89,"final":89,"obs":"Bien !"},{"id":"13157830","name":"Diago Erick Rojas Soto","primer":114,"segundo":null,"sistema":100,"ensayo":100,"habilitacion":100,"final":100,"obs":"Bien !"},{"id":"12978149","name":"Edilson Erick Carrillo Huanca","primer":55.5,"segundo":90,"sistema":90,"ensayo":80,"habilitacion":85,"final":85,"obs":"Bien !"},{"id":"8435547","name":"Rainer Enrique Saavedra Peña","primer":76,"segundo":null,"sistema":76,"ensayo":95,"habilitacion":85.5,"final":85.5,"obs":"Bien !"},{"id":"13550931","name":"Estefania Emily Benitez Salas","primer":102.5,"segundo":null,"sistema":100,"ensayo":88,"habilitacion":94,"final":96,"obs":"Buen trabajo ! Continua con el esfuerzo. Tienes  +2 por tu examen"},{"id":"13121354","name":"Joaquin Diego Von Borries Velasco","primer":30,"segundo":110,"sistema":100,"ensayo":85,"habilitacion":92.5,"final":92.5,"obs":"Bien !"},{"id":"9121680","name":"IGNACIO DAVID SALMON MARQUEZ","primer":150,"segundo":null,"sistema":100,"ensayo":100,"habilitacion":100,"final":100,"obs":"Bien !"},{"id":"8469600","name":"Leandro David Cusicanqui Zárate","primer":95,"segundo":null,"sistema":95,"ensayo":88,"habilitacion":91.5,"final":91.5,"obs":"Bien !"},{"id":"9893045","name":"Ronald Cruz Coharite Mamani","primer":137.5,"segundo":null,"sistema":100,"ensayo":100,"habilitacion":100,"final":100,"obs":"Bien !"},{"id":"10642109","name":"José Arturo García Vega","primer":50,"segundo":112,"sistema":100,"ensayo":null,"habilitacion":100,"final":100,"obs":"Bien !"},{"id":"8309678","name":"Abril Ariana Bernal Gómez","primer":50,"segundo":101,"sistema":100,"ensayo":75,"habilitacion":87.5,"final":87.5,"obs":"Bien !"},{"id":"11063636","name":"Juan Antonio Clavijo Vega","primer":35,"segundo":86,"sistema":86,"ensayo":70,"habilitacion":78,"final":78,"obs":"Bien !"},{"id":"6192739","name":"Marco Antonio Leyva Gutierrez","primer":63,"segundo":null,"sistema":63,"ensayo":95,"habilitacion":79,"final":79,"obs":"Bien !"},{"id":"13732426","name":"Jorge Andrés Garcia Irrazabal","primer":25,"segundo":117,"sistema":100,"ensayo":75,"habilitacion":87.5,"final":87.5,"obs":"Bien !"},{"id":"8481161","name":"Jorge Andre Manrique Rodríguez","primer":55,"segundo":113,"sistema":100,"ensayo":95,"habilitacion":97.5,"final":97.5,"obs":"Bien !"},{"id":"9987617","name":"Catherine Alexandra Carvajal Cuentas","primer":25,"segundo":null,"sistema":25,"ensayo":null,"habilitacion":25,"final":25,"obs":"No se presento al recuperatorio"},{"id":"12454204","name":"Libia Alessandra Quisbert Ticona","primer":30,"segundo":76,"sistema":76,"ensayo":85,"habilitacion":80.5,"final":80.5,"obs":"Bien !"},{"id":"12419529","name":"adrian Alejandro Alarcon Tirado","primer":130,"segundo":null,"sistema":100,"ensayo":95,"habilitacion":97.5,"final":97.5,"obs":"Bien !"},{"id":"12421206","name":"Sebastián Alejandro Cajias Casanova","primer":114,"segundo":null,"sistema":100,"ensayo":95,"habilitacion":97.5,"final":99,"obs":"Bien !"},{"id":"10018438","name":"Laura Adriana Rojas Martinez","primer":20,"segundo":43,"sistema":60,"ensayo":60,"habilitacion":60,"final":43,"obs":"No habilita, pasaras al 2T del final, si apruebas lo harás con 51"},{"id":"8343710","name":"Alba Bautista Ayaviri","primer":65,"segundo":null,"sistema":65,"ensayo":75,"habilitacion":70,"final":70,"obs":"Bien !"},{"id":"12361431","name":"Alessandra Puma Cabrera","primer":24.5,"segundo":45,"sistema":60,"ensayo":60,"habilitacion":60,"final":45,"obs":"No habilita, pasaras al 2T del final, si apruebas lo harás con 51"},{"id":"12800326","name":"Brayan Mendoza Mamani","primer":45.5,"segundo":45,"sistema":60,"ensayo":60,"habilitacion":60,"final":45,"obs":"No habilita, pasaras al 2T del final, si apruebas lo harás con 51"},{"id":"8344263","name":"Deyna Lecoña Arratia","primer":70,"segundo":null,"sistema":70,"ensayo":95,"habilitacion":82.5,"final":82.5,"obs":"Bien !"},{"id":"8466835","name":"Diego Alcázar Gonzales","primer":70,"segundo":null,"sistema":70,"ensayo":88,"habilitacion":79,"final":79,"obs":"Bien !"},{"id":"6846633","name":"Natalia Pardo Coss","primer":1,"segundo":89,"sistema":89,"ensayo":90,"habilitacion":89.5,"final":89.5,"obs":"Bien !"},{"id":"6777074","name":"Sebastian Ramos Ramos","primer":0,"segundo":0,"sistema":0,"ensayo":90,"habilitacion":45,"final":null,"obs":"No habilita, pasaras al 2T del final, si apruebas lo harás con 51"}];
 
 function toTitleCase(s) {
   return s.replace(/\S+/g, t => t.charAt(0).toUpperCase() + t.slice(1).toLowerCase());
 }
-
-(function init() {
-  const primerScores = STUDENTS.map(s => s.primer).filter(v => v !== null);
-  const segundoScores = STUDENTS.map(s => s.segundo).filter(v => v !== null);
-  MAXV.primer = primerScores.length ? Math.max(...primerScores) : null;
-  MAXV.segundo = segundoScores.length ? Math.max(...segundoScores) : null;
-
-  document.getElementById('loadingMsg').style.display = 'none';
-  document.getElementById('searchWrap').classList.add('visible');
-  document.getElementById('statsPrimer').classList.add('visible');
-  document.getElementById('statsSegundo').classList.add('visible');
-  document.getElementById('footerNote').textContent = `Nota mínima de aprobación: ${PASS} puntos`;
-  document.getElementById('primerSub').textContent = `Sobre ${STUDENTS.length} estudiantes registrados`;
-  document.getElementById('segundoSub').textContent = `Solo estudiantes que tomaron el recuperatorio (${segundoScores.length} de ${STUDENTS.length})`;
-
-  renderStats('primer');
-  renderStats('segundo');
-})();
-
 function fmtVal(v) {
   if (v === null || v === undefined) return '—';
-  return Number.isInteger(v) ? String(v) : v.toFixed(1);
+  return Number.isInteger(v) ? String(v) : v.toFixed(2).replace(/\.?0+$/, '');
 }
 
 function lookup() {
@@ -248,36 +229,42 @@ function lookup() {
   document.getElementById('rSegundo').textContent = fmtVal(st.segundo);
   document.getElementById('rSistema').textContent = fmtVal(st.sistema);
   document.getElementById('rEnsayo').textContent = fmtVal(st.ensayo);
+  document.getElementById('rHabilitacion').textContent = fmtVal(st.habilitacion);
+  document.getElementById('rFinal').textContent = fmtVal(st.final);
 
   const chip = document.getElementById('rChip');
-  if (st.sistema === null) {
-    chip.textContent = 'Sin nota';
+  if (st.final === null) {
+    chip.textContent = 'Pendiente';
     chip.className = 'status-chip chip-absent';
   } else {
-    const pass = st.sistema >= PASS;
+    const pass = st.final >= PASS;
     chip.textContent = pass ? 'Aprobado ✓' : 'Reprobado ✗';
     chip.className = 'status-chip ' + (pass ? 'chip-pass' : 'chip-fail');
   }
 
   const obsBox = document.getElementById('rObs');
-  if (st.obs) { obsBox.textContent = st.obs; obsBox.style.display = 'block'; }
-  else { obsBox.style.display = 'none'; }
+  if (st.obs) {
+    document.getElementById('rObsText').textContent = st.obs;
+    obsBox.style.display = 'block';
+  } else {
+    obsBox.style.display = 'none';
+  }
 
   card.classList.add('visible');
 }
 
 document.getElementById('idInput').addEventListener('keydown', e => { if (e.key === 'Enter') lookup(); });
 
-function getSubset(field, tab) {
-  const scored = STUDENTS.filter(s => s[field] !== null);
+function getSubset(tab) {
+  const scored = STUDENTS.filter(s => s.final !== null);
   if (tab === 'all') return scored;
-  if (tab === 'pass') return scored.filter(s => s[field] >= PASS);
-  return scored.filter(s => s[field] < PASS);
+  if (tab === 'pass') return scored.filter(s => s.final >= PASS);
+  return scored.filter(s => s.final < PASS);
 }
 
-function stats(arr, field) {
+function calcStats(arr) {
   if (!arr.length) return {};
-  const s = arr.map(x => x[field]).sort((a, b) => a - b);
+  const s = arr.map(x => x.final).sort((a, b) => a - b);
   const n = s.length;
   const mean = s.reduce((a, b) => a + b, 0) / n;
   const mid = Math.floor(n / 2);
@@ -287,16 +274,21 @@ function stats(arr, field) {
 
 function fmt(v) {
   if (v === undefined || v === null) return '—';
-  return Number.isInteger(v) ? v : v.toFixed(1);
+  return Number.isInteger(v) ? v : parseFloat(v.toFixed(2));
 }
 
-function renderStats(field) {
-  const tab = tabState[field];
-  const sub = getSubset(field, tab);
-  const st = stats(sub, field);
+function renderStats(tab) {
+  const sub = getSubset(tab);
+  const st = calcStats(sub);
+  const allScored = STUDENTS.filter(s => s.final !== null);
 
-  const grid = document.getElementById('metricGrid-' + field);
-  const nCard = tab === 'all' ? `<div class="metric-card"><div class="metric-label">Estudiantes</div><div class="metric-value">${st.n || 0}</div></div>` : '';
+  document.getElementById('statsSub').textContent =
+    `${allScored.length} estudiantes con nota final registrada · ${STUDENTS.filter(s=>s.final===null).length} pendientes`;
+
+  const grid = document.getElementById('metricGrid');
+  const nCard = tab === 'all'
+    ? `<div class="metric-card"><div class="metric-label">Estudiantes</div><div class="metric-value">${st.n || 0}</div></div>`
+    : '';
   grid.innerHTML = `
     ${nCard}
     <div class="metric-card"><div class="metric-label">Máximo</div><div class="metric-value">${fmt(st.max)}</div></div>
@@ -305,23 +297,17 @@ function renderStats(field) {
     <div class="metric-card"><div class="metric-label">Mediana</div><div class="metric-value">${fmt(st.median)}</div></div>
   `;
 
-  const maxv = MAXV[field];
-  const hi = maxv && maxv > 100 ? maxv + 1 : 101;
+  const maxFinal = Math.max(...allScored.map(s => s.final));
+  const hi = maxFinal > 100 ? maxFinal + 1 : 101;
   const bins = [
-    [0, 20, '0–19'],
-    [20, 40, '20–39'],
-    [40, 60, '40–59'],
-    [60, 80, '60–79'],
-    [80, 100, '80–99'],
-    [100, hi, '100+'],
+    [0, 20, '0–19'], [20, 40, '20–39'], [40, 60, '40–59'],
+    [60, 80, '60–79'], [80, 100, '80–99'], [100, hi, '100+'],
   ];
   const counts = bins.map(([lo, hiB, lbl]) => ({
-    lbl,
-    n: sub.filter(s => s[field] >= lo && s[field] < hiB).length,
-    pass: lo >= PASS
+    lbl, n: sub.filter(s => s.final >= lo && s.final < hiB).length, pass: lo >= PASS
   }));
   const maxN = Math.max(...counts.map(c => c.n), 1);
-  document.getElementById('distChart-' + field).innerHTML = counts.map(c => {
+  document.getElementById('distChart').innerHTML = counts.map(c => {
     const pct = Math.max(Math.round((c.n / maxN) * 100), c.n > 0 ? 4 : 0);
     const color = c.pass ? 'var(--bar-pass)' : 'var(--bar-fail)';
     return `<div class="hist-col">
@@ -332,13 +318,14 @@ function renderStats(field) {
   }).join('');
 }
 
-function setTab(field, tab, btn) {
-  tabState[field] = tab;
-  const section = field === 'primer' ? document.getElementById('statsPrimer') : document.getElementById('statsSegundo');
-  section.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+function setTab(tab, btn) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  renderStats(field);
+  renderStats(tab);
 }
+
+renderStats('all');
 </script>
 </body>
 </html>
